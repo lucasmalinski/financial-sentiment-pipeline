@@ -75,23 +75,30 @@ def main():
     # Step 2: Load previous data if any
     if os.path.exists(OUTPUT_CSV_FILE):
         old_df = pd.read_csv(OUTPUT_CSV_FILE)
-        full_df = pd.concat([old_df, new_df], ignore_index=True)
-        full_df.drop_duplicates(subset='headline', inplace=True)
+        # Identify new headlines only
+        new_headlines = ~new_df['headline'].isin(old_df['headline'])
+        only_new_df = new_df[new_headlines].copy()
+        # Step 3: Download BTC data only if needed
+        if not only_new_df.empty:
+            btc_data = yf.download(TICKER, period=DATA_PERIOD, interval="1h")
+            btc_data.index = btc_data.index.tz_localize(None)
+            only_new_df['btc_price'] = only_new_df['parsed_timestamp'].apply(
+                lambda ts: get_btc_price_at(pd.to_datetime(ts), btc_data)
+            )
+        # Combine, keeping old rows as-is
+        full_df = pd.concat([only_new_df, old_df], ignore_index=True)
+        # Drop duplicates, keeping the first (which is the new one if duplicated)
+        full_df.drop_duplicates(subset='headline', keep='first', inplace=True)
     else:
+        btc_data = yf.download(TICKER, period=DATA_PERIOD, interval="1h")
+        btc_data.index = btc_data.index.tz_localize(None)
+        new_df['btc_price'] = new_df['parsed_timestamp'].apply(
+            lambda ts: get_btc_price_at(pd.to_datetime(ts), btc_data)
+        )
         full_df = new_df
 
-    # Step 3: Download BTC data
-    btc_data = yf.download(TICKER, period=DATA_PERIOD, interval="1h")
-    btc_data.index = btc_data.index.tz_localize(None)
-
-    # Step 4: Add BTC prices if missing
-    if 'btc_price' not in full_df.columns:
-        full_df['btc_price'] = None
-
-    full_df['btc_price'] = full_df.apply(
-        lambda row: row['btc_price'] if pd.notna(row['btc_price']) else get_btc_price_at(pd.to_datetime(row['parsed_timestamp']), btc_data),
-        axis=1
-    )
+    # Sort so latest news is at index 0
+    full_df.sort_values('parsed_timestamp', ascending=False, inplace=True, ignore_index=True)
 
     # Step 5: Save results
     full_df.to_csv(OUTPUT_CSV_FILE, index=False)
@@ -99,4 +106,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-# --- End of parse_and_combine.py ---           
+# --- End of parse_and_combine.py ---
