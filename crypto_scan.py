@@ -108,6 +108,11 @@ def main():
     full_df.to_csv(OUTPUT_CSV_FILE, index=False)
     print(f"\n✅ Saved {len(full_df)} headlines to '{OUTPUT_CSV_FILE}'")
 
+    # Step 6: Save as simple HTML table
+    html_file = OUTPUT_CSV_FILE.replace('.csv', '.html')
+    full_df.to_html(html_file, index=False, escape=True)
+    print(f"🌐 Saved HTML table to '{html_file}'")
+
 if __name__ == "__main__":
     main()
 # --- End of parse_and_combine.py ---
