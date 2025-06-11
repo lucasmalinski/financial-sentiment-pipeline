@@ -75,6 +75,8 @@ def main():
     # Step 2: Load previous data if any
     if os.path.exists(OUTPUT_CSV_FILE):
         old_df = pd.read_csv(OUTPUT_CSV_FILE)
+        old_df['parsed_timestamp'] = pd.to_datetime(old_df['parsed_timestamp'], errors='coerce')
+        new_df['parsed_timestamp'] = pd.to_datetime(new_df['parsed_timestamp'], errors='coerce')
         # Identify new headlines only
         new_headlines = ~new_df['headline'].isin(old_df['headline'])
         only_new_df = new_df[new_headlines].copy()
@@ -90,6 +92,8 @@ def main():
         # Drop duplicates, keeping the first (which is the new one if duplicated)
         full_df.drop_duplicates(subset='headline', keep='first', inplace=True)
     else:
+        new_df['parsed_timestamp'] = pd.to_datetime(new_df['parsed_timestamp'], errors='coerce')
+        # Download BTC data for all new headlines
         btc_data = yf.download(TICKER, period=DATA_PERIOD, interval="1h")
         btc_data.index = btc_data.index.tz_localize(None)
         new_df['btc_price'] = new_df['parsed_timestamp'].apply(
