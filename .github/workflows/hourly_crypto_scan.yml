@@ -29,6 +29,9 @@ jobs:
       - name: Run crypto_scan.py
         run: python crypto_scan.py
 
+      - name: Run price_reaction.py
+        run: python price_reaction.py
+
       - name: Commit and push if CSV or HTML changed
         run: |
           git config --global user.name "GitHub Actions Bot"
