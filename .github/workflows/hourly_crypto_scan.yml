@@ -29,11 +29,12 @@ jobs:
       - name: Run crypto_scan.py
         run: python crypto_scan.py
 
-      - name: Commit and push if CSV changed
+      - name: Commit and push if CSV or HTML changed
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          git add financial_data_v1.0_debug.csv financial_data_v1.0_debug.html
+          git add financial_data_v1.0_debug.csv docs/financial_data_v1.0_debug.html
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           git diff --staged --quiet || git commit -m "Hourly update: crypto news and BTC price ($TIMESTAMP)"
+          git pull --rebase origin main
           git push
