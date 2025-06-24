@@ -1,7 +1,7 @@
 # Yahoo Finance Crypto News Scraper
 ### **This pipeline scrapes the latest crypto news from Yahoo Finance and saves it into a `data.csv` file.**
 
-> This is a small project I built to get some hands-on practice with Python, web scraping, and getting started on some CI/CD. The main exercise was to reliably automate the entire process to fetch data every half hour 24/7.
+> This is a small project I built to get some hands-on practice with Python, web scraping, and getting started on some CI/CD. The main exercise was to reliably automate the entire process to fetch data every half hour around the clock.
 
 
 
