@@ -33,7 +33,7 @@ jobs:
 
       
       - name: Run Scraper
-        run: scrape.py 
+        run: python scrape.py 
 
       # 8. Commit and push changes using the best parts of both versions
       - name: Commit and push if data.csv changed
