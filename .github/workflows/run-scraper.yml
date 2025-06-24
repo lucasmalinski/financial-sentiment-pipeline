@@ -1,0 +1,54 @@
+name: 30min Crypto News Scanner
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs at minutes 6 and 36 of every hour
+    - cron: '6,36 * * * *'
+
+# Grants the job write permissions
+permissions:
+  contents: write
+
+jobs:
+  run-crypto-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 4. Latest version of the checkout action (v4)
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      # 5. Latest version of setup-python (v5) and using python 3.12
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      
+      - name: Run Scraper
+        run: scrape.py 
+
+      # 8. Commit and push changes using the best parts of both versions
+      - name: Commit and push if data.csv changed
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions-bot@users.noreply.github.com"
+          
+          # Add data file
+          git add data.csv
+          
+          # Timestamp logic for commit message
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          
+          # Checks if there are changes and only commits if there are.
+          git diff --staged --quiet || git commit -m "30 min update: added news ($TIMESTAMP)"
+          
+          # Push the changes
+          git push
