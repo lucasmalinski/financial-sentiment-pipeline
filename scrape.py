@@ -35,7 +35,7 @@ def get_news(soup):
     '''
     h3_tags = soup.find_all('h3', class_='clamp yf-10mgn4g')
     timestamp_tags = soup.find_all('div', class_="publishing yf-1weyqlp")
-    print(h3_tags)
+    #print(h3_tags)
     newsdict = {
         "titles": [],
         "author": [],
@@ -73,7 +73,7 @@ def get_news(soup):
             newsdict["timestamp"].append(parsed_date)
             newsdict["fetch_timestamp"].append(datetime.now())
             #print(f"Appended | {title} | {parsed_date}")
-    print(newsdict)    
+    #print(newsdict)    
     return newsdict
     
 def create_df(newsdict):
