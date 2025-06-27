@@ -33,7 +33,7 @@ def get_news(soup):
     If a saved CSV exists, loads it and adds only new entries to avoid duplicates.
     Returns a dictionary containing the updated news data.
     '''
-    h3_tags = soup.find_all('h3', class_='clamp yf-1jsv3x8')
+    h3_tags = soup.find_all('h3', class_='clamp yf-10mgn4g')
     timestamp_tags = soup.find_all('div', class_="publishing yf-1weyqlp")
     
     newsdict = {
@@ -109,8 +109,9 @@ def main():
 
     #7. Df to CSV
     generate_csv(df)
-
+    print(df)
     return df
+
 
 if __name__ == "__main__":
     main()
