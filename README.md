@@ -62,10 +62,3 @@ pip install pandas beautifulsoup4 requests dateparser
 
 (Or use `pip install -r requirements.txt` if you're using the requirements file.)
 
-## What's Next? (Roadmap)
-
-Here are some future features I'd like to explore:
-
-* **Price Integration:** Pull Bitcoin price at the time each article is published using yfinance.
-* **Database Migration:** Switch from CSV to SQLite
-* **Data Analysis:** As the dataset grows, it will serve me as a dataset for studying DS and ML.
